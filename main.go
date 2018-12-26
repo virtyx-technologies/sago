@@ -1,11 +1,12 @@
 package main
 
+import ("github.com/virtyx-technologies/sago/stopwatch")
+
 func main() {
 	initGlobals()
 
-	stopwatch("start")
+	stopwatch.Click("start")
 
-	letsRoll("init")
 	initGlobals()
 	checkBaseRequirements() // needs to come after $do_html is defined
 	parseCmdLine("$@")
@@ -23,9 +24,9 @@ func main() {
 	findOpensslBinary()
 	choosePrintf()
 	prepareDebug()
-	stopwatch("parse")
+	stopwatch.Click("parse")
 	prepareArrays()
-	stopwatch("prepare_arrays")
+	stopwatch.Click("prepare_arrays")
 	mybanner()
 	checkProxy()
 	check4opensslOldfarts()
@@ -73,7 +74,7 @@ func main() {
 			drawLine("-", (TERM_WIDTH * 2 / 3))
 			outLine(nil)
 			NODEIP = ip
-			letsRoll("${STARTTLS_PROTOCOL}")
+			letsRoll("${STARTTLS_PROTOCOL}", ip)
 			//  TODO : RET = $((RET + $?)) // RET value per IP address
 		}
 		drawLine("-", (TERM_WIDTH * 2 / 3))
@@ -82,11 +83,12 @@ func main() {
 		outLine("$IPADDRs")
 	} else { // Just 1x ip4v to check, applies also if CMDLINE_IP was supplied
 		NODEIP = IPADDRs[0]
-		letsRoll("${STARTTLS_PROTOCOL}")
+		letsRoll("${STARTTLS_PROTOCOL}", NODEIP)
 		// RET=$?
 	}
 	return
 }
+
 
 func drawLine(s string, i int) {
 	// TODO
@@ -218,10 +220,4 @@ func checkBaseRequirements() {
 	// TODO
 }
 
-func letsRoll(s string) {
-	// TODO
-}
 
-func stopwatch(s string) {
-	// TODO
-}

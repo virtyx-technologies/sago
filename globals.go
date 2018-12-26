@@ -1,5 +1,6 @@
 package main
 
+
 import "os"
 
 // ########## Definition of error codes
@@ -306,3 +307,35 @@ func initGlobals() {
 func isDevBuild() bool {
 	return true
 }
+
+var UrlPath string
+
+var (
+	doAllciphers bool
+	doBeast bool
+	doBreach bool
+	doCcsInjection bool
+	doCipherPerProto bool
+	doCipherlists bool
+	doClientSimulation bool
+	doCrime bool
+	doDrown bool
+	doFreak bool
+	doGrease bool
+	doHeader bool
+	doHeartbleed bool
+	doLogjam bool
+	doLucky13 bool
+	doPfs bool
+	doProtocols bool
+	doRc4 bool
+	doRenego bool
+	doRobot bool
+	doServerDefaults bool
+	doServerPreference bool
+	doSslPoodle bool
+	doSweet32 bool
+	doTicketbleed bool
+	doTlsFallbackScsv bool
+	doVulnerabilities bool
+	)
