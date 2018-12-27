@@ -7,7 +7,6 @@ func main() {
 
 	stopwatch.Click("start")
 
-	initGlobals()
 	checkBaseRequirements() // needs to come after $do_html is defined
 	parseCmdLine("$@")
 	// html_header() needs to be called early! Otherwise if html_out() is called before html_header() and the
