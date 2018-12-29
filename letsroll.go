@@ -3,10 +3,17 @@ package main
 import (
 	"github.com/virtyx-technologies/sago/stopwatch"
 	"log"
+	"regexp"
 	"time"
 )
 
 var startTime, lastTime time.Time
+
+var (
+	rxNotColon = regexp.MustCompile(`[^:]`)
+	rxColon    = regexp.MustCompile(`[:]`)
+	rxValid    = regexp.MustCompile(`[a-zA-Z0-9:]`)
+)
 
 func init() {
 	startTime = time.Now()
@@ -21,11 +28,11 @@ func letsRoll(service, nodeIp string) int {
 	stopwatch.Click("initialized")
 
 	if "" == nodeIp {
-		log.Fatal("NODE doesn't resolve to an IP address", NODEIP, ERR_DNSLOOKUP)
+		log.Fatal("NODE doesn't resolve to an IP address", nodeIp, ERR_DNSLOOKUP)
 	}
-	nodeIpToProperIp6()
+
+	nodeIp = nodeIpToProperIp6(nodeIp)
 	resetHostDependedVars()
-	determineRdns() // Returns always zero or has already exited if fatal error occurred
 	stopwatch.Click("determineRdns")
 
 	SERVER_COUNTER++
@@ -208,16 +215,45 @@ func determineService(s string) {
 	// TODO
 }
 
-func determineRdns() {
-	// TODO
-}
-
 func resetHostDependedVars() {
-	// TODO
+	// TODO should probably be struct members
+	TLS_EXTENSIONS=""
+	PROTOS_OFFERED=""
+	OPTIMAL_PROTO=""
+	SERVER_SIZE_LIMIT_BUG=false
+
 }
 
-func nodeIpToProperIp6() {
-	// TODO
+func nodeIpToProperIp6(nodeIp string) string {
+	if isIpv6Addr(nodeIp) {
+		if !UNBRACKTD_IPV6 {
+			nodeIp = "[" + nodeIp + "]"
+		}
+		// TODO don't think we need this
+		// IPv6 addresses are longer, this variable takes care that "further IP" and "Service" is properly aligned
+		// len_nodeip = ${//NODEIP}
+		// CORRECT_SPACES = "$(printf -- " "'%.s' $(eval "echo {1.."$((len_nodeip - 17))"}"))"
+	}
+	return nodeIp
+}
+
+func isIpv6Addr(s string) bool {
+
+	if len(s) == 0 {
+		return false
+	}
+
+	// less than 2x ":"
+	if len(rxNotColon.ReplaceAllString(s, "")) < 2 {
+		return false
+	}
+
+	// check on chars allowed:
+	if len(rxValid.ReplaceAllString(s, "")) > 0 {
+		return false
+	}
+
+	return true
 }
 
 func fileoutSectionHeader(sectionNumber *int, flag bool) {

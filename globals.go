@@ -70,11 +70,11 @@ var ASSUME_HTTP bool  // in seldom cases (WAF, old servers, grumpy SSL) service 
 var BUGS = "TODO"     // -bugs option from openssl, needed for some BIG IP F5
 var WARNINGS = "off"  // can be either off or batch
 var DEBUG = 0         // 1: normal output the files in /tmp/ are kept for further debugging purposes
-// 2: list more what's going on , also lists some errors of connections
-// 3: slight hexdumps + other info,
-// 4: display bytes sent via sockets
-// 5: display bytes received via sockets
-// 6: whole 9 yards
+							 // 2: list more what's going on , also lists some errors of connections
+							 // 3: slight hexdumps + other info,
+							 // 4: display bytes sent via sockets
+							 // 5: display bytes received via sockets
+							 // 6: whole 9 yards
 var FAST bool                    // preference: show only first cipher, run_allciphers with openssl instead of sockets
 var WIDE bool                    // whether to display for some options just ciphers or a table w hexcode/KX,Enc,strength etc.
 var MASS_TESTING_MODE = "serial" // can be serial or parallel. Subject to change
@@ -114,11 +114,11 @@ var DAYS2WARN2 = 30                           // days to warn before cert expire
 var VULN_THRESHLD int                         // if vulnerabilities to check >$VULN_THRESHLD we DON'T show a separate header line in the output each vuln. check
 var UNBRACKTD_IPV6 = false                    // some versions of OpenSSL (like Gentoo) don't support [bracketed] IPv6 addresses
 var NO_ENGINE bool                            // if there are problems finding the (external) openssl engine set this to true
-const CLIENT_MIN_PFS = 5                      // number of ciphers needed to run a test for PFS
+var CLIENT_MIN_PFS = 5                        // number of ciphers needed to run a test for PFS
 var CAPATH = "${CAPATH:-/etc/ssl/certs/}"     // Does nothing yet (FC has only a CA bundle per default, ==> openssl version -d)
 var GOOD_CA_BUNDLE = ""                       // A bundle of CA certificates that can be used to validate the server's certificate
 var CERTIFICATE_LIST_ORDERING_PROBLEM = false // Set to true if server sends a certificate list that contains a certificate
-// that does not certify the one immediately preceding it. (See RFC 8446, Section 4.4.2)
+															 // that does not certify the one immediately preceding it. (See RFC 8446, Section 4.4.2)
 var STAPLED_OCSP_RESPONSE = ""
 var HAS_DNS_SANS = false // Whether the certificate includes a subjectAltName extension with a DNS name or an application-specific identifier type.
 var MEASURE_TIME bool
@@ -127,7 +127,9 @@ var DISPLAY_CIPHERNAMES = "openssl" // display OpenSSL ciphername (but both Open
 const UA_STD = "TLS tester from $SWURL"
 const UA_SNEAKY = "Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0"
 
-// ########## Initialization part, further global vars just being declared here
+// ########## End of Initialization part
+
+// Other global vars just being declared here
 //
 var PRINTF = "" // which external printf to use. Empty presets the internal one, see #1130
 var IKNOW_FNAME = false
@@ -164,11 +166,11 @@ var HEADERVALUE = ""
 var HTTP_STATUS_CODE = ""
 var DH_GROUP_OFFERED = ""
 var DH_GROUP_LEN_P = 0
-var KEY_SHARE_EXTN_NR = "33" // The extension number for key_share was changed from 40 to 51 in TLSv1.3 draft 23.
-// In order to support draft 23 and later in addition to earlier drafts, need to
-// know which extension number to use. Note that it appears that a single
-// ClientHello cannot advertise both draft 23 and later and earlier drafts.
-// Preset may help to deal with STARTTLS + TLS 1.3 draft 23 and later but not earlier.
+var KEY_SHARE_EXTN_NR = "33"  // The extension number for key_share was changed from 40 to 51 in TLSv1.3 draft 23.
+										// In order to support draft 23 and later in addition to earlier drafts, need to
+										// know which extension number to use. Note that it appears that a single
+										// ClientHello cannot advertise both draft 23 and later and earlier drafts.
+										// Preset may help to deal with STARTTLS + TLS 1.3 draft 23 and later but not earlier.
 var BAD_SERVER_HELLO_CIPHER = false // reserved for cases where a ServerHello doesn't contain a cipher offered in the ClientHello
 var GOST_STATUS_PROBLEM = false
 var PATTERN2SHOW = ""
