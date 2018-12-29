@@ -2,6 +2,7 @@ package reversedns
 
 import (
 	"bufio"
+	"github.com/virtyx-technologies/sago/globals"
 	"github.com/virtyx-technologies/sago/util"
 	"log"
 	"os/exec"
@@ -75,11 +76,11 @@ func init() {
 	}
 
 	if localResolver == nil {
-		log.Fatal("Neither \"dig\"  nor \"avahi-resolve\" is present", ERR_DNSBIN)
+		log.Fatal("Neither \"dig\"  nor \"avahi-resolve\" is present", globals.ERR_DNSBIN)
 	}
 
 	if stdResolver == nil {
-		log.Fatal("Neither \"dig\", \"host\", \"drill\" nor \"nslookup\" is present", ERR_DNSBIN)
+		log.Fatal("Neither \"dig\", \"host\", \"drill\" nor \"nslookup\" is present", globals.ERR_DNSBIN)
 	}
 
 }
