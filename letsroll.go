@@ -1,7 +1,9 @@
 package main
 
 import (
+	. "github.com/virtyx-technologies/sago/options"
 	"github.com/virtyx-technologies/sago/stopwatch"
+	. "github.com/virtyx-technologies/sago/globals"
 	"log"
 	"regexp"
 	"time"
@@ -45,7 +47,7 @@ func letsRoll(service, nodeIp string) int {
 
 	// all top level functions  now following have the prefix "run_"
 	fileoutSectionHeader(&sectionNumber, false)
-	if doProtocols {
+	if Options.GetBool("DoProtocols") {
 		ret += runProtocols()
 		stopwatch.Click("runProtocols()")
 		ret += runNpn()
@@ -55,36 +57,36 @@ func letsRoll(service, nodeIp string) int {
 	}
 
 	fileoutSectionHeader(&sectionNumber, true)
-	if doGrease {
+	if Options.GetBool("DoGrease") {
 		ret += runGrease()
 		stopwatch.Click("runGrease")
 	}
 
 	fileoutSectionHeader(&sectionNumber, true)
-	if doCipherlists {
+	if Options.GetBool("DoCipherlists") {
 		ret += runCipherlists()
 		stopwatch.Click("runCipherlists")
 	}
 
 	fileoutSectionHeader(&sectionNumber, true)
-	if doPfs {
+	if Options.GetBool("DoPfs") {
 		ret += runPfs()
 		stopwatch.Click("runPfs")
 	}
 
 	fileoutSectionHeader(&sectionNumber, true)
-	if doServerPreference {
+	if Options.GetBool("DoServerPreference") {
 		ret += runServerPreference()
 		stopwatch.Click("runServerPreference")
 	}
 
 	fileoutSectionHeader(&sectionNumber, true)
-	if doServerDefaults {
+	if Options.GetBool("DoServerDefaults") {
 		ret += runServerDefaults()
 		stopwatch.Click("runServerDefaults")
 	}
 
-	if doHeader {
+	if Options.GetBool("DoHeader") {
 		// TODO: refactor this into functions
 		fileoutSectionHeader(&sectionNumber, true)
 		if SERVICE == "HTTP" {
@@ -104,89 +106,89 @@ func letsRoll(service, nodeIp string) int {
 	}
 
 	// vulnerabilities
-	if VULN_COUNT <= VULN_THRESHLD && doVulnerabilities {
+	if VULN_COUNT <= Options.GetInt("VULN_THRESHLD") && Options.GetBool("DoVulnerabilities") {
 		outln()
 		prHeadlineln(" Testing vulnerabilities ")
 		outln()
 	}
 
 	fileoutSectionHeader(&sectionNumber, true)
-	if doHeartbleed {
+	if Options.GetBool("DoHeartbleed") {
 		ret += runHeartbleed()
 		stopwatch.Click("runHeartbleed")
 	}
-	if doCcsInjection {
+	if Options.GetBool("DoCcsInjection") {
 		ret += runCcsInjection()
 		stopwatch.Click("runCcsInjection")
 	}
-	if doTicketbleed {
+	if Options.GetBool("DoTicketbleed") {
 		ret += runTicketbleed()
 		stopwatch.Click("runTicketbleed")
 	}
-	if doRobot {
+	if Options.GetBool("DoRobot") {
 		ret += runRobot()
 		stopwatch.Click("runRobot")
 	}
-	if doRenego {
+	if Options.GetBool("DoRenego") {
 		ret += runRenego()
 		stopwatch.Click("runRenego")
 	}
-	if doCrime {
+	if Options.GetBool("DoCrime") {
 		ret += runCrime()
 		stopwatch.Click("runCrime")
 	}
-	if doBreach {
+	if Options.GetBool("DoBreach") {
 		runBreach(UrlPath)
 	}
-	if doSslPoodle {
+	if Options.GetBool("DoSslPoodle") {
 		ret += runSslPoodle()
 		stopwatch.Click("runSslPoodle")
 	}
-	if doTlsFallbackScsv {
+	if Options.GetBool("DoTlsFallbackScsv") {
 		ret += runTlsFallbackScsv()
 		stopwatch.Click("runTlsFallbackScsv")
 	}
-	if doSweet32 {
+	if Options.GetBool("DoSweet32") {
 		ret += runSweet32()
 		stopwatch.Click("runSweet32")
 	}
-	if doFreak {
+	if Options.GetBool("DoFreak") {
 		ret += runFreak()
 		stopwatch.Click("runFreak")
 	}
-	if doDrown {
+	if Options.GetBool("DoDrown") {
 		ret += runDrown()
 		stopwatch.Click("runDrown")
 	}
-	if doLogjam {
+	if Options.GetBool("DoLogjam") {
 		ret += runLogjam()
 		stopwatch.Click("runLogjam")
 	}
-	if doBeast {
+	if Options.GetBool("DoBeast") {
 		ret += runBeast()
 		stopwatch.Click("runBeast")
 	}
-	if doLucky13 {
+	if Options.GetBool("DoLucky13") {
 		ret += runLucky13()
 		stopwatch.Click("runLucky13")
 	}
-	if doRc4 {
+	if Options.GetBool("DoRc4") {
 		ret += runRc4()
 		stopwatch.Click("runRc4")
 	}
 
 	fileoutSectionHeader(&sectionNumber, true)
-	if doAllciphers {
+	if Options.GetBool("DoAllciphers") {
 		ret += runAllciphers()
 		stopwatch.Click("runAllciphers")
 	}
-	if doCipherPerProto {
+	if Options.GetBool("DoCipherPerProto") {
 		ret += runCipherPerProto()
 		stopwatch.Click("runCipherPerProto")
 	}
 
 	fileoutSectionHeader(&sectionNumber, true)
-	if doClientSimulation {
+	if Options.GetBool("DoClientSimulation") {
 		ret += runClientSimulation()
 		stopwatch.Click("runClientSimulation")
 	}
@@ -226,7 +228,7 @@ func resetHostDependedVars() {
 
 func nodeIpToProperIp6(nodeIp string) string {
 	if isIpv6Addr(nodeIp) {
-		if !UNBRACKTD_IPV6 {
+		if !options.Options.GetBool("UNBRACKTD_IPV6") {
 			nodeIp = "[" + nodeIp + "]"
 		}
 		// TODO don't think we need this

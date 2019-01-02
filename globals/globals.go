@@ -1,7 +1,5 @@
 package globals
 
-import "os"
-
 // ########## Definition of error codes
 //
 const ERR_BASH = 255        // Bash version incorrect
@@ -27,10 +25,10 @@ const ALLOK = 0             // All is fine
 // ########## Internal definitions
 //
 const VERSION = "3.0rc3"
-const SWCONTACT = "dirk aet testssl dot sh"
+const SWCONTACT = "dirk aet testssl options.Dot sh"
 
 var SWURL string
-// egrep -q "dev|rc|beta" <<< "$VERSION" && \
+// TODO egrep -q "dev|rc|beta" <<< "$VERSION" && \
 //      SWURL="https://testssl.sh/dev/" ||
 //      SWURL="https://testssl.sh/"
 const CVS_REL = "$(tail -5 \"$0\" | awk '/dirkw Exp/ { print $4\" \"$5\" \"$6}')"
@@ -41,89 +39,6 @@ var REL_DATE, GIT_REL, GIT_REL_SHORT string
 const PROG_NAME = "$(basename \"$0\")"
 const RUN_DIR = "$(dirname \"$0\")"
 
-var TESTSSL_INSTALL_DIR = "${TESTSSL_INSTALL_DIR:-\"\"}" // If you run testssl.sh and it doesn't find it necessary file automagically set TESTSSL_INSTALL_DIR
-var CA_BUNDLES_PATH = "${CA_BUNDLES_PATH:-\"\"}"         // You can have your stores some place else
-var ADDITIONAL_CA_FILES = "${ADDITIONAL_CA_FILES:-\"\"}" // single file with a CA in PEM format or comma separated lists of them
-var CIPHERS_BY_STRENGTH_FILE = ""
-var TLS_DATA_FILE = "" // mandatory file for socket-based handshakes
-var OPENSSL_LOCATION = ""
-var HNAME = "$(hostname)"
-
-var CMDLINE string
-var CMDLINE_ARRAY = os.Args       // When performing mass testing, the child processes need to be sent the
-var MASS_TESTING_CMDLINE []string // command line in the form of an array (see #702 and http://mywiki.wooledge.org/BashFAQ/050).
-
-// ########## Defining (and presetting) variables which can be changed
-//
-//  Following variables make use of $ENV and can be used like "OPENSSL=<myprivate_path_to_openssl> ./testssl.sh <URI>"
-var OPENSSL, OPENSSL_TIMEOUT string
-var PHONE_OUT bool    // Whether testssl can retrieve CRLs and OCSP
-var FAST_SOCKET bool  // EXPERIMENTAL feature to accelerate sockets -- DO NOT USE it for production
-var COLOR = 2         // 3: Extra color (ciphers, curves), 2: Full color, 1: B/W only 0: No ESC at all
-var COLORBLIND bool   // if true, swap blue and green in the output
-var SHOW_EACH_C bool  // where individual ciphers are tested show just the positively ones tested
-var SHOW_SIGALGO bool // "secret" switch whether testssl.sh shows the signature algorithm for -E / -e
-var SNEAKY bool       // is the referer and useragent we leave behind just usual?
-var QUIET bool        // don't output the banner. By doing this you acknowledge usage term appearing in the banner
-var SSL_NATIVE bool   // we do per default bash sockets where possible "true": switch back to "openssl native"
-var ASSUME_HTTP bool  // in seldom cases (WAF, old servers, grumpy SSL) service detection fails. "True" enforces HTTP checks
-var BUGS = "TODO"     // -bugs option from openssl, needed for some BIG IP F5
-var WARNINGS = "off"  // can be either off or batch
-var DEBUG = 0         // 1: normal output the files in /tmp/ are kept for further debugging purposes
-							 // 2: list more what's going on , also lists some errors of connections
-							 // 3: slight hexdumps + other info,
-							 // 4: display bytes sent via sockets
-							 // 5: display bytes received via sockets
-							 // 6: whole 9 yards
-var FAST bool                    // preference: show only first cipher, run_allciphers with openssl instead of sockets
-var WIDE bool                    // whether to display for some options just ciphers or a table w hexcode/KX,Enc,strength etc.
-var MASS_TESTING_MODE = "serial" // can be serial or parallel. Subject to change
-var LOGFILE string               // logfile if used
-var JSONFILE string              // jsonfile if used
-var CSVFILE string               // csvfile if used
-var HTMLFILE string              // HTML if used
-var FNAME string                 // file name to read commands from
-var FNAME_PREFIX string          // output filename prefix, see --outprefix
-var APPEND bool                  // append to csv/json file instead of overwriting it
-var NODNS string                 // If unset it does all DNS lookups per default. "min" only for hosts or "none" at all
-var HAS_IPv6 = false             // if you have OpenSSL with IPv6 support AND IPv6 networking set it to yes
-var ALL_CLIENTS bool             // do you want to run all client simulation form all clients supplied by SSLlabs?
-var OFFENSIVE = true             // do you want to include offensive vulnerability tests which may cause blocking by an IDS?
-
-// ########## Tuning vars which cannot be set by a cmd line switch. Use instead e.g "HEADER_MAXSLEEP=10 ./testssl.sh <your_args_here>"
-//
-var EXPERIMENTAL bool                         // a development hook which allows us to disable code
-var PROXY_WAIT int                            // waiting at max 20 seconds for socket reply through proxy
-var DNS_VIA_PROXY = true                      // do DNS lookups via proxy. --ip=proxy reverses this
-var IGN_OCSP_PROXY bool                       // Also when --proxy is supplied it is ignored when testing for revocation via OCSP via --phone-out
-var HEADER_MAXSLEEP int                       // we wait this long before killing the process to retrieve a service banner / http header
-var MAX_SOCKET_FAIL int                       // If this many failures for TCP socket connects are reached we terminate
-var MAX_OSSL_FAIL int                         // If this many failures for s_client connects are reached we terminate
-var MAX_HEADER_FAIL int                       // If this many failures for HTTP GET are encountered we terminate
-var MAX_WAITSOCK int                          // waiting at max 10 seconds for socket reply. There shouldn't be any reason to change this.
-var CCS_MAX_WAITSOCK int                      // for the two CCS payload (each). There shouldn't be any reason to change this.
-var HEARTBLEED_MAX_WAITSOCK int               // for the heartbleed payload. There shouldn't be any reason to change this.
-var STARTTLS_SLEEP int                        // max time wait on a socket for STARTTLS. MySQL has a fixed value of 1 which can't be overwritten (#914)
-var FAST_STARTTLS = true                      // at the cost of reliability decrease the handshakes for STARTTLS
-var USLEEP_SND = 0.1                          // sleep time for general socket send
-var USLEEP_REC = 0.2                          // sleep time for general socket receive
-var HSTS_MIN int                              // >179 days is ok for HSTS
-var HPKP_MIN int                              // >=30 days should be ok for HPKP_MIN, practical hints?
-var DAYS2WARN1 = 60                           // days to warn before cert expires, threshold 1
-var DAYS2WARN2 = 30                           // days to warn before cert expires, threshold 2
-var VULN_THRESHLD int                         // if vulnerabilities to check >$VULN_THRESHLD we DON'T show a separate header line in the output each vuln. check
-var UNBRACKTD_IPV6 = false                    // some versions of OpenSSL (like Gentoo) don't support [bracketed] IPv6 addresses
-var NO_ENGINE bool                            // if there are problems finding the (external) openssl engine set this to true
-var CLIENT_MIN_PFS = 5                        // number of ciphers needed to run a test for PFS
-var CAPATH = "${CAPATH:-/etc/ssl/certs/}"     // Does nothing yet (FC has only a CA bundle per default, ==> openssl version -d)
-var GOOD_CA_BUNDLE = ""                       // A bundle of CA certificates that can be used to validate the server's certificate
-var CERTIFICATE_LIST_ORDERING_PROBLEM = false // Set to true if server sends a certificate list that contains a certificate
-															 // that does not certify the one immediately preceding it. (See RFC 8446, Section 4.4.2)
-var STAPLED_OCSP_RESPONSE = ""
-var HAS_DNS_SANS = false // Whether the certificate includes a subjectAltName extension with a DNS name or an application-specific identifier type.
-var MEASURE_TIME bool
-var MEASURE_TIME_FILE string
-var DISPLAY_CIPHERNAMES = "openssl" // display OpenSSL ciphername (but both OpenSSL and RFC ciphernames in wide mode)
 const UA_STD = "TLS tester from $SWURL"
 const UA_SNEAKY = "Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0"
 
@@ -262,23 +177,6 @@ var NR_PARALLEL_TESTS int             // number of parallel tests run
 var NEXT_PARALLEL_TEST_TO_FINISH = 0  // number of parallel tests that have completed and have been processed
 var FIRST_JSON_OUTPUT = true          // true if no output has been added to $JSONFILE yet.
 
-// ########## Cipher suite information
-//
-var (
-	TLS_NR_CIPHERS            int
-	TLS_CIPHER_HEXCODE        string
-	TLS_CIPHER_OSSL_NAME      string
-	TLS_CIPHER_RFC_NAME       string
-	TLS_CIPHER_SSLVERS        string
-	TLS_CIPHER_KX             string
-	TLS_CIPHER_AUTH           string
-	TLS_CIPHER_ENC            string
-	TLS_CIPHER_EXPORT         string
-	TLS_CIPHER_OSSL_SUPPORTED string
-)
-
-const TLS13_OSSL_CIPHERS = "TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_CCM_SHA256:TLS_AES_128_CCM_8_SHA256"
-
 // ########## Severity functions and globals
 //
 var INFO = 0
@@ -289,7 +187,7 @@ var HIGH = 3
 var CRITICAL = 4
 var SEVERITY_LEVEL = 0
 
-func initGlobals() {
+func InitGlobals() {
 	if isDevBuild() {
 		GIT_REL = "$(git log --format='%h %ci' -1 2>/dev/null | awk '{ print $1\" \"$2\" \"$3 }')"
 		GIT_REL_SHORT = "$(git log --format='%h %ci' -1 2>/dev/null | awk '{ print $1 }')"
@@ -298,12 +196,12 @@ func initGlobals() {
 		REL_DATE = "$(tail -5 \"$0\" | awk '/dirkw Exp/ { print $5 }')"
 	}
 
-	HSTS_MIN = HSTS_MIN * 86400 // correct to seconds
-	HPKP_MIN = HPKP_MIN * 86400 // correct to seconds
-
-	if MEASURE_TIME_FILE != "" {
-		MEASURE_TIME = true
-	}
+	// TODO HSTS_MIN = HSTS_MIN * 86400 // correct to seconds
+	//HPKP_MIN = HPKP_MIN * 86400 // correct to seconds
+	//
+	//if MEASURE_TIME_FILE != "" {
+	//	MEASURE_TIME = true
+	//}
 
 }
 
@@ -314,32 +212,4 @@ func isDevBuild() bool {
 
 var UrlPath string
 
-var (
-	doAllciphers       bool
-	doBeast            bool
-	doBreach           bool
-	doCcsInjection     bool
-	doCipherPerProto   bool
-	doCipherlists      bool
-	doClientSimulation bool
-	doCrime            bool
-	doDrown            bool
-	doFreak            bool
-	doGrease           bool
-	doHeader           bool
-	doHeartbleed       bool
-	doLogjam           bool
-	doLucky13          bool
-	doPfs              bool
-	doProtocols        bool
-	doRc4              bool
-	doRenego           bool
-	doRobot            bool
-	doServerDefaults   bool
-	doServerPreference bool
-	doSslPoodle        bool
-	doSweet32          bool
-	doTicketbleed      bool
-	doTlsFallbackScsv  bool
-	doVulnerabilities  bool
-)
+

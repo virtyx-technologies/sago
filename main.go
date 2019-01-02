@@ -1,45 +1,42 @@
 package main
 
-import ("github.com/virtyx-technologies/sago/stopwatch")
+import (
+	. "github.com/virtyx-technologies/sago/globals"
+	. "github.com/virtyx-technologies/sago/options"
+	"github.com/virtyx-technologies/sago/stopwatch"
+)
 
 func main() {
-	initGlobals()
 
 	stopwatch.Click("start")
 
-	checkBaseRequirements() // needs to come after $do_html is defined
-	parseCmdLine("$@")
 	// html_header() needs to be called early! Otherwise if html_out() is called before html_header() and the
 	// command line contains --htmlfile <htmlfile> or --html, it'll make problems with html output, see #692.
 	// json_header and csv_header could be called later but for context reasons we'll leave it here
 	htmlHeader()
 	jsonHeader()
 	csvHeader()
-	getInstallDir()
 	// see #705, we need to source TLS_DATA_FILE here instead of in get_install_dir(), see #705
 	loadTlsVars() // See ./etc/tls_data.txt
 	setColorFunctions()
-	maketempf()
-	findOpensslBinary()
-	choosePrintf()
-	prepareDebug()
+	maketempf() // TODO : location for error file & CA cert
 	stopwatch.Click("parse")
-	prepareArrays()
-	stopwatch.Click("prepare_arrays")
+	LoadCiphers()
+	stopwatch.Click("LoadCiphers")
 	mybanner()
 	checkProxy()
 	check4opensslOldfarts()
 	checkBsdMount()
 
-	if doDisplayOnly {
-		prettyPrintLocal("$PATTERN2SHOW")
+	if Options.GetBool(DoDisplayOnly) {
+		prettyPrintLocal("$PATTERN2SHOW") // TODO
 		return
 	}
 	fileoutBanner()
 
-	if doMassTesting {
+	if Options.GetBool(DoMassTesting) {
 		prepareLogging()
-		if MASS_TESTING_MODE == "parallel" {
+		if Options.GetString("MASS-TESTING=MODE") == "parallel" {
 			runMassTestingParallel()
 		} else {
 			runMassTesting()
@@ -49,7 +46,7 @@ func main() {
 	htmlBanner()
 
 	// TODO: there shouldn't be the need for a special case for --mx, only the ip addresses we would need upfront and the do-parser
-	if doMxAllIps {
+	if Options.GetBool(DoMxAllIps) {
 		if 1 == queryGlobals() { // if we have just 1x "do_*" --> we do a standard run -- otherwise just the one specified
 			setScanningDefaults()
 		}
@@ -179,10 +176,6 @@ func choosePrintf() {
 	// TODO
 }
 
-func findOpensslBinary() {
-	// TODO
-}
-
 func maketempf() {
 	// TODO
 }
@@ -192,10 +185,6 @@ func setColorFunctions() {
 }
 
 func loadTlsVars() {
-	// TODO
-}
-
-func getInstallDir() {
 	// TODO
 }
 
@@ -210,13 +199,4 @@ func jsonHeader() {
 func htmlHeader() {
 	// TODO
 }
-
-func parseCmdLine(s string) {
-	// TODO
-}
-
-func checkBaseRequirements() {
-	// TODO
-}
-
 

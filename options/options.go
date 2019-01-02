@@ -2,6 +2,8 @@ package options
 
 import (
 	"fmt"
+	"github.com/virtyx-technologies/sago/util"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,10 +17,24 @@ var (
 	Flags      *pflag.FlagSet
 	configFile string
 	configDir  string
+
+	OpenSSL, DataDir string
 )
 
+
 const (
-	configFileName = "sago.json"
+	configFileName = "sago-config.yaml"
+
+	// Flag names
+   DoDisplayOnly = "DoDisplayOnly"
+   DoMassTesting = "DoMassTesting"
+   DoMxAllIps    = "DoMxAllIps"
+
+	Version = "version"
+	Help = "help"
+	Target = "target"
+	OpenSslFile = "openssl-file"
+	InstallDir = "install-dir"
 )
 
 func init() {
@@ -60,11 +76,15 @@ func init() {
 
 func addFlags(fs *pflag.FlagSet) { // TODO add real flags
 	// Actions
-	fs.Bool("version", false, "Print version & exit ")
-	fs.Bool("help", false, "Display help & exit")
+	fs.Bool(Version, false, "Print version & exit ")
+	fs.Bool(Help, false, "Display help & exit")
 	// Configuration
-	fs.String("log", "info", "Level of agent logging ")
-	fs.Bool("system-log", true, "Use system logging ")
+	fs.String(Target, "", "Comma-separated list of IPs and/or Hosts")   // TODO
+	fs.String(OpenSslFile, "", "full path to OpenSSL executable")   // TODO
+	fs.String("log", "info", "Level of logging ")   // TODO
+	fs.Bool(DoDisplayOnly, false, "TODO")
+	fs.Bool(DoMassTesting, false, "TODO")
+	fs.Bool(DoMxAllIps, false, "TODO")
 }
 
 func PrintDefaults() {
@@ -73,6 +93,8 @@ func PrintDefaults() {
 
 // Initialise global variables
 func initGlobals() {
+	OpenSSL = findOpensslBinary()
+	DataDir = findDataDir()
 	// globals.InternalMetrics = Options.GetBool(ParamInternalMetrics)
 }
 
@@ -91,3 +113,28 @@ func ApiKey() string {
 func ConfigFile() string {
 	return configFile
 }
+
+func findOpensslBinary() string {
+	const openssl = "openssl"
+	if found, path := util.IsOnPath(openssl); found {
+		Options.SetDefault(OpenSslFile, path)
+	}
+	var path string
+	if path = Options.GetString(OpenSslFile); path == "" {
+		log.Fatal("Cannot locate openssl")
+	}
+	return path
+}
+
+func findDataDir() string {
+	installDir := filepath.Dir(os.Args[0])
+	Options.SetDefault(InstallDir, installDir)
+	var path string
+	if path = Options.GetString(InstallDir); path == "" {
+		log.Fatal("Cannot locate InstallDir")
+	}
+	return path
+}
+
+
+

@@ -59,19 +59,19 @@ func ReverseDNS(ip string) string {
 // Establish local and standard resolvers
 func init() {
 
-	if util.IsOnPath("avahi-resolve") {
+	if found, _ := util.IsOnPath("avahi-resolve"); found {
 		localResolver = NewResolver("avahi-resolve -a %s", "filterAvahi")
-	} else if util.IsOnPath("dig") {
+	} else if found, _ := util.IsOnPath("dig"); found {
 		localResolver = NewResolver("dig -x %s @224.0.0.251 -p 5353 +notcp +noall +answer", "filterDig")
 	}
 
-	if util.IsOnPath("dig") {
+	if found, _ := util.IsOnPath("dig"); found {
 		stdResolver = NewResolver("dig -x %s +noall +answer", "filterDig")
-	} else if util.IsOnPath("host") {
+	} else if found, _ := util.IsOnPath("host"); found {
 		stdResolver = NewResolver("host -t PTR %s", "filterHost")
-	} else if util.IsOnPath("drill") {
+	} else if found, _ := util.IsOnPath("drill"); found {
 		stdResolver = NewResolver("drill -x ptr %s", "filterDrill")
-	} else if util.IsOnPath("nslookup") {
+	} else if found, _ := util.IsOnPath("nslookup"); found {
 		stdResolver = NewResolver(`nslookup -type=PTR %s`, "filterNslookup")
 	}
 

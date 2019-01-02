@@ -1,0 +1,106 @@
+location :
+  - openssl: ""
+      ca-bundles: ""                # You can have your stores some place else
+      additional-ca-files: ""       # single file with a CA in PEM format or comma separated lists of them
+      ciphers-by-strength-file: ""
+      tls-data-file: ""             # mandatory file for socket-based handshakes
+
+openssl-timeout: 0  # TODO
+phone-out: false    # Whether testssl can retrieve CRLs and OCSP
+fast-socket: false  # EXPERIMENTAL feature to accelerate sockets -- DO NOT USE it for production
+color: 2            # 3: Extra color (ciphers, curves), 2: Full color, 1: B/W only 0: No ESC at all
+colorblind: false   # if true, swap blue and green in the output
+show-each-c: false  # where individual ciphers are tested show just the positively ones tested
+show-sigalgo: false # "secret" switch whether testssl.sh shows the signature algorithm for -E / -e
+sneaky: false       # is the referer and useragent we leave behind just usual?
+quiet: false        # don't output the banner. By doing this you acknowledge usage term appearing in the banner
+ssl-native: false   # we do per default bash sockets where possible "true": switch back to "openssl native"
+assume-http: false  # in seldom cases (WAF, old servers, grumpy SSL) service detection fails. "True" enforces HTTP checks
+bugs: "TODO"        # -bugs option from openssl, needed for some BIG IP F5
+warnings: "off"     # can be either off or batch
+debug: 0            # 1: normal output the files in /tmp/ are kept for further debugging purposes
+                    # 2: list more what's going on , also lists some errors of connections
+                    # 3: slight hexdumps + other info,
+                    # 4: display bytes sent via sockets
+                    # 5: display bytes received via sockets
+                    # 6: whole 9 yards
+fast: false         # preference: show only first cipher, run-allciphers with openssl instead of sockets
+wide: false         # whether to display for some options just ciphers or a table w hexcode/KX,Enc,strength etc.
+mass-testing-mode: "serial" # can be serial or parallel. Subject to change
+logfile: ""              # logfile if used
+jsonfile: ""             # jsonfile if used
+csvfile: ""              # csvfile if used
+htmlfile: ""             # HTML if used
+fname: ""                # file name to read commands from
+fname-prefix: ""         # output filename prefix, see --outprefix
+append: false            # append to csv/json file instead of overwriting it
+nodns: ""                # If unset it does all DNS lookups per default. "min" only for hosts or "none" at all
+has-ipv6: false          # if you have OpenSSL with IPv6 support AND IPv6 networking set it to yes
+all-clients: false       # do you want to run all client simulation form all clients supplied by SSLlabs?
+offensive: true          # do you want to include offensive vulnerability tests which may cause blocking by an IDS?
+
+########### Tuning vars
+experimental: false                      # a development hook which allows us to disable code
+proxy-wait: 20                           # waiting at max 20 seconds for socket reply through proxy
+dns-via-proxy: true                      # do DNS lookups via proxy. --ip:proxy reverses this
+ign-ocsp-proxy: false                    # Also when --proxy is supplied it is ignored when testing for revocation via OCSP via --phone-out
+header-maxsleep: !!int                   # we wait this long before killing the process to retrieve a service banner / http header
+max-socket-fail: !!int                   # If this many failures for TCP socket connects are reached we terminate
+max-ossl-fail: !!int                     # If this many failures for s-client connects are reached we terminate
+max-header-fail: !!int                   # If this many failures for HTTP GET are encountered we terminate
+max-waitsock: !!int                      # waiting at max 10 seconds for socket reply. There shouldn't be any reason to change this.
+ccs-max-waitsock: !!int                  # for the two CCS payload (each). There shouldn't be any reason to change this.
+heartbleed-max-waitsock: !!int           # for the heartbleed payload. There shouldn't be any reason to change this.
+starttls-sleep: !!int                    # max time wait on a socket for STARTTLS. MySQL has a fixed value of 1 which can't be overwritten (#914)
+fast-starttls: true                      # at the cost of reliability decrease the handshakes for STARTTLS
+usleep-snd: 0.1                          # sleep time for general socket send
+usleep-rec: 0.2                          # sleep time for general socket receive
+hsts-min: !!int                          # >179 days is ok for HSTS
+hpkp-min: !!int                          # >:30 days should be ok for HPKP-MIN, practical hints?
+days2warn1: 60                           # days to warn before cert expires, threshold 1
+days2warn2: 30                           # days to warn before cert expires, threshold 2
+vuln-threshld: !!int                     # if vulnerabilities to check >$VULN-THRESHLD we DON'T show a separate header line in the output each vuln. check
+unbracktd-ipv6: false                    # some versions of OpenSSL (like Gentoo) don't support [bracketed] IPv6 addresses
+no-engine: false                         # if there are problems finding the (external) openssl engine set this to true
+client-min-pfs: 5                        # number of ciphers needed to run a test for PFS
+capath: ""                               # Does nothing yet (FC has only a CA bundle per default,::> openssl version -d)
+good-ca-bundle: ""                       # A bundle of CA certificates that can be used to validate the server's certificate
+certificate-list-ordering-problem: false # Set to true if server sends a certificate list that contains a certificate
+                                         # that does not certify the one immediately preceding it. (See RFC 8446, Section 4.4.2)
+stapled-ocsp-response: ""
+has-dns-sans: false                      # Whether the certificate includes a subjectAltName extension with a DNS name or an application-specific identifier type.
+measure-time: false
+measure-time-file: ""
+display-ciphernames: "openssl"           # display OpenSSL ciphername (but both OpenSSL and RFC ciphernames in wide mode)
+
+# Tests
+DoAllciphers: true
+DoCipherPerProto: true
+DoCipherlists: true
+DoClientSimulation: true
+DoServerDefaults: true
+DoServerPreference: true
+DoHeader: true
+DoProtocols: true
+
+# Vulnerabilities
+DoVulnerabilities: true
+DoBeast: true
+DoBreach: true
+DoCcsInjection: true
+DoCrime: true
+DoDrown: true
+DoFreak: true
+DoGrease: true
+DoHeartbleed: true
+DoLogjam: true
+DoLucky13: true
+DoPfs: true
+DoRc4: true
+DoRenego: true
+DoRobot: true
+DoSslPoodle: true
+DoSweet32: true
+DoTicketbleed: true
+DoTlsFallbackScsv: true
+ 
