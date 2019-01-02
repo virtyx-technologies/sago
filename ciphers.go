@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"github.com/virtyx-technologies/sago/options"
+	"github.com/virtyx-technologies/sago/globals"
 	"log"
 	"os"
 	"path/filepath"
@@ -28,7 +28,7 @@ type Cipher struct {
 var Ciphers []Cipher
 
 func LoadCiphers() {
-	filename := filepath.Join(options.DataDir, "Cipher-mapping.txt")
+	filename := filepath.Join(globals.DataDir, "Cipher-mapping.txt")
 
 	file, err := os.Open(filename)
 	if err != nil {

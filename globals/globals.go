@@ -1,5 +1,12 @@
 package globals
 
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Most of the variables in this package should be removed during development.
+// They mostly represent environment variables used by the original shell script.
+//
+///////////////////////////////////////////////////////////////////////////////////
+
 // ########## Definition of error codes
 //
 const ERR_BASH = 255        // Bash version incorrect
@@ -12,7 +19,7 @@ const ERR_DNSBIN = 249      // Problem with DNS lookup binaries
 const ERR_OTHERCLIENT = 248 // Other client problem
 const ERR_DNSLOOKUP = 247   // Problem with resolving IP addresses or names
 const ERR_CONNECT = 246     // Connectivity problem
-const ERR_CLUELESS = 245    // Weird state, either though user options or testssl.sh
+const ERR_CLUELESS = 245    // Weird state, either though user globals or testssl.sh
 const ERR_RESOURCE = 244    // Resources testssl.sh needs couldn't be read
 const ERR_CHILD = 242       // Child received a signal from master
 const ALLOK = 0             // All is fine
@@ -25,7 +32,7 @@ const ALLOK = 0             // All is fine
 // ########## Internal definitions
 //
 const VERSION = "3.0rc3"
-const SWCONTACT = "dirk aet testssl options.Dot sh"
+const SWCONTACT = "dirk aet testssl globals.Dot sh"
 
 var SWURL string
 // TODO egrep -q "dev|rc|beta" <<< "$VERSION" && \

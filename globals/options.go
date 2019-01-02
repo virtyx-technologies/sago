@@ -1,9 +1,7 @@
-package options
+package globals
 
 import (
 	"fmt"
-	"github.com/virtyx-technologies/sago/util"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -19,6 +17,7 @@ var (
 	configDir  string
 
 	OpenSSL, DataDir string
+	OpenSslMeta *OpenSslMetadata
 )
 
 
@@ -91,13 +90,6 @@ func PrintDefaults() {
 	Flags.PrintDefaults()
 }
 
-// Initialise global variables
-func initGlobals() {
-	OpenSSL = findOpensslBinary()
-	DataDir = findDataDir()
-	// globals.InternalMetrics = Options.GetBool(ParamInternalMetrics)
-}
-
 func ConfigDir() string {
 	return configDir
 }
@@ -113,28 +105,5 @@ func ApiKey() string {
 func ConfigFile() string {
 	return configFile
 }
-
-func findOpensslBinary() string {
-	const openssl = "openssl"
-	if found, path := util.IsOnPath(openssl); found {
-		Options.SetDefault(OpenSslFile, path)
-	}
-	var path string
-	if path = Options.GetString(OpenSslFile); path == "" {
-		log.Fatal("Cannot locate openssl")
-	}
-	return path
-}
-
-func findDataDir() string {
-	installDir := filepath.Dir(os.Args[0])
-	Options.SetDefault(InstallDir, installDir)
-	var path string
-	if path = Options.GetString(InstallDir); path == "" {
-		log.Fatal("Cannot locate InstallDir")
-	}
-	return path
-}
-
 
 

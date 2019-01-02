@@ -1,4 +1,4 @@
-package options
+package globals
 
 import (
 	"os"

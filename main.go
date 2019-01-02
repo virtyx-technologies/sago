@@ -2,7 +2,6 @@ package main
 
 import (
 	. "github.com/virtyx-technologies/sago/globals"
-	. "github.com/virtyx-technologies/sago/options"
 	"github.com/virtyx-technologies/sago/stopwatch"
 )
 
@@ -161,7 +160,7 @@ func checkProxy() {
 }
 
 func mybanner() {
-	// TODO
+	// TODO Banner for ToS, etc
 }
 
 func prepareArrays() {

@@ -1,9 +1,8 @@
 package main
 
 import (
-	. "github.com/virtyx-technologies/sago/options"
-	"github.com/virtyx-technologies/sago/stopwatch"
 	. "github.com/virtyx-technologies/sago/globals"
+	"github.com/virtyx-technologies/sago/stopwatch"
 	"log"
 	"regexp"
 	"time"
@@ -40,7 +39,7 @@ func letsRoll(service, nodeIp string) int {
 	SERVER_COUNTER++
 	determineService(service) // STARTTLS service? Other will be determined here too. Returns always 0 or has already exited if fatal error occurred
 
-	// "secret" devel options --devel:
+	// "secret" devel globals --devel:
 	//	$doTlsSockets && [[ $TLS_LOW_BYTE -eq 22 ]] && { sslv2Sockets "" "true"; echo $? ; exit $ALLOK
 	//$doTlsSockets && [[ $TLS_LOW_BYTE -ne 22 ]] && { tlsSockets "$TLS_LOW_BYTE" "$HEX_CIPHER" "all"; echo $? ; exit $ALLOK
 	//$doCipherMatch && { fileoutSectionHeader $sectionNumber false; runCipherMatch ${singleCipher}
@@ -219,16 +218,16 @@ func determineService(s string) {
 
 func resetHostDependedVars() {
 	// TODO should probably be struct members
-	TLS_EXTENSIONS=""
-	PROTOS_OFFERED=""
-	OPTIMAL_PROTO=""
-	SERVER_SIZE_LIMIT_BUG=false
+	TLS_EXTENSIONS = ""
+	PROTOS_OFFERED = ""
+	OPTIMAL_PROTO = ""
+	SERVER_SIZE_LIMIT_BUG = false
 
 }
 
 func nodeIpToProperIp6(nodeIp string) string {
 	if isIpv6Addr(nodeIp) {
-		if !options.Options.GetBool("UNBRACKTD_IPV6") {
+		if !Options.GetBool("UNBRACKTD_IPV6") {
 			nodeIp = "[" + nodeIp + "]"
 		}
 		// TODO don't think we need this
