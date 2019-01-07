@@ -1,4 +1,5 @@
 package reversedns
+// TODO : deprecated, see net.Resolver
 
 import (
 	"regexp"

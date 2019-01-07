@@ -22,22 +22,22 @@ func init() {
 	// TODO	[[ -n "$MEASURE_TIME_FILE" ]] && >"$MEASURE_TIME_FILE"
 }
 
-func letsRoll(service, nodeIp string) int {
+func letsRoll(service, node string) int {
 	var ret int
 	sectionNumber := 1
 
 	stopwatch.Click("initialized")
 
-	if "" == nodeIp {
-		log.Fatal("NODE doesn't resolve to an IP address", nodeIp, ERR_DNSLOOKUP)
+	if "" == node {
+		log.Fatal("NODE doesn't resolve to an IP address", node, ERR_DNSLOOKUP)
 	}
 
-	nodeIp = nodeIpToProperIp6(nodeIp)
+	node = nodeIpToProperIp6(node)
 	resetHostDependedVars()
 	stopwatch.Click("determineRdns")
 
 	SERVER_COUNTER++
-	determineService(service) // STARTTLS service? Other will be determined here too. Returns always 0 or has already exited if fatal error occurred
+	startTlsService := determineService(service, node) // STARTTLS service? Other will be determined here too. Returns always 0 or has already exited if fatal error occurred
 
 	// "secret" devel globals --devel:
 	//	$doTlsSockets && [[ $TLS_LOW_BYTE -eq 22 ]] && { sslv2Sockets "" "true"; echo $? ; exit $ALLOK
@@ -212,7 +212,7 @@ func calcScantime() {
 
 }
 
-func determineService(s string) {
+func determineService(service, node string) string {
 	// TODO
 }
 

@@ -3,6 +3,7 @@ package main
 import (
 	. "github.com/virtyx-technologies/sago/globals"
 	"github.com/virtyx-technologies/sago/stopwatch"
+	"log"
 )
 
 func main() {
@@ -27,15 +28,16 @@ func main() {
 	check4opensslOldfarts()
 	checkBsdMount()
 
-	if Options.GetBool(DoDisplayOnly) {
-		prettyPrintLocal("$PATTERN2SHOW") // TODO
+	if Options.GetBool(PrintCiphers) {
+		prettyPrintLocal("$PATTERN2SHOW") // TODO - print local ciphers, see -V option
 		return
 	}
 	fileoutBanner()
 
+	// Mass testing means reading multiple command lines from the file specified by --file
 	if Options.GetBool(DoMassTesting) {
 		prepareLogging()
-		if Options.GetString("MASS-TESTING=MODE") == "parallel" {
+		if Options.GetString("MASS-TESTING-MODE") == "parallel" {
 			runMassTestingParallel()
 		} else {
 			runMassTesting()
@@ -53,37 +55,12 @@ func main() {
 		return
 	}
 
-	if NODE == "" {
-		parseHnPort(URI) // NODE, URL_PATH, PORT, IPADDRs and IP46ADDR is set now
-	}
-	prepareLogging()
-
-	if ! determineIpAddresses() {
-		fatal("No IP address could be determined", ERR_DNSLOOKUP)
-	}
-	if len(IPADDRs) > 1 { // we have more than one ipv4 address to check
-		prBold("Testing all IPv4 addresses (port $PORT): ")
-		outLine(IPADDRs)
-		TERM_WIDTH := 100
-		for _, ip := range IPADDRs {
-			drawLine("-", (TERM_WIDTH * 2 / 3))
-			outLine(nil)
-			NODEIP = ip
-			letsRoll("${STARTTLS_PROTOCOL}", ip)
-			//  TODO : RET = $((RET + $?)) // RET value per IP address
-		}
-		drawLine("-", (TERM_WIDTH * 2 / 3))
-		outLine()
-		prBold("Done testing now all IP addresses (on port $PORT): ")
-		outLine("$IPADDRs")
-	} else { // Just 1x ip4v to check, applies also if CMDLINE_IP was supplied
-		NODEIP = IPADDRs[0]
-		letsRoll("${STARTTLS_PROTOCOL}", NODEIP)
-		// RET=$?
+	// Main loop
+	for _, ip := range IPADDRs {
+		letsRoll("${STARTTLS_PROTOCOL}", ip)
 	}
 	return
 }
-
 
 func drawLine(s string, i int) {
 	// TODO
@@ -152,7 +129,9 @@ func checkBsdMount() {
 }
 
 func check4opensslOldfarts() {
-	// TODO
+	if OpenSslMeta.VerMajor < 1 {
+		log.Fatal("Versions of openssl older than 1.0 are not supported")
+	}
 }
 
 func checkProxy() {
@@ -198,4 +177,3 @@ func jsonHeader() {
 func htmlHeader() {
 	// TODO
 }
-

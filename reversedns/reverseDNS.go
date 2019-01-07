@@ -1,5 +1,5 @@
 package reversedns
-
+// TODO : deprecated, see net.Resolver
 import (
 	"bufio"
 	"github.com/virtyx-technologies/sago/globals"

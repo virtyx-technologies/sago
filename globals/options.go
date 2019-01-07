@@ -10,24 +10,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
-	Options    *viper.Viper
-	Flags      *pflag.FlagSet
-	configFile string
-	configDir  string
-
-	OpenSSL, DataDir string
-	OpenSslMeta *OpenSslMetadata
-)
-
-
 const (
 	configFileName = "sago-config.yaml"
 
 	// Flag names
-   DoDisplayOnly = "DoDisplayOnly"
-   DoMassTesting = "DoMassTesting"
+   PrintCiphers  = "print-ciphers" // was -V
+   DoMassTesting = "DoMassTesting" // was --file
    DoMxAllIps    = "DoMxAllIps"
+	XmppHost      = "xmpphost"
 
 	Version = "version"
 	Help = "help"
@@ -77,11 +67,12 @@ func addFlags(fs *pflag.FlagSet) { // TODO add real flags
 	// Actions
 	fs.Bool(Version, false, "Print version & exit ")
 	fs.Bool(Help, false, "Display help & exit")
+	fs.Bool(PrintCiphers, false, "Print local ciphers & exit")
 	// Configuration
-	fs.String(Target, "", "Comma-separated list of IPs and/or Hosts")   // TODO
-	fs.String(OpenSslFile, "", "full path to OpenSSL executable")   // TODO
+	fs.String(Target, "", "Comma-separated list of IPs and/or Hosts")
+	fs.String(OpenSslFile, "", "full path to OpenSSL executable")
+	fs.String(XmppHost, "", "Supplies the XML stream 'to-domain' for STARTTLS enabled XMPP")
 	fs.String("log", "info", "Level of logging ")   // TODO
-	fs.Bool(DoDisplayOnly, false, "TODO")
 	fs.Bool(DoMassTesting, false, "TODO")
 	fs.Bool(DoMxAllIps, false, "TODO")
 }

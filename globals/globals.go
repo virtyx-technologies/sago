@@ -1,5 +1,11 @@
 package globals
 
+import (
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
+	"regexp"
+)
+
 //////////////////////////////////////////////////////////////////////////////////
 //
 // Most of the variables in this package should be removed during development.
@@ -23,6 +29,20 @@ const ERR_CLUELESS = 245    // Weird state, either though user globals or testss
 const ERR_RESOURCE = 244    // Resources testssl.sh needs couldn't be read
 const ERR_CHILD = 242       // Child received a signal from master
 const ALLOK = 0             // All is fine
+
+
+var (
+	Options    *viper.Viper
+	Flags      *pflag.FlagSet
+	configFile string
+	configDir  string
+
+	OpenSSL string // The path to the openssl executable
+	DataDir string
+	OpenSslMeta *OpenSslMetadata
+)
+
+
 
 // ########## Traps! Make sure that temporary files are cleaned up after use in ANY case
 // TODO
@@ -70,6 +90,8 @@ var NR_HEADER_FAIL = 0  // .. for HTTP_GET
 var PROTOS_OFFERED = "" // This keeps which protocol is being offered. See has_server_protocol().
 var DETECTED_TLS_VERSION = ""
 var TLS_EXTENSIONS = ""
+
+var Targets []string
 
 const NPN_PROTOs = "spdy/4a2,spdy/3,spdy/3.1,spdy/2,spdy/1,http/1.1"
 
@@ -194,7 +216,12 @@ var HIGH = 3
 var CRITICAL = 4
 var SEVERITY_LEVEL = 0
 
-func InitGlobals() {
+// Misc regular expressions
+var RxCommas   = regexp.MustCompile(`\s*,\s*`) // Used to split string at comma with or without spaces
+var RxFinalS   = regexp.MustCompile(`s$`)      // Used to remove trailing 's'
+var RxFinalDot = regexp.MustCompile(`\.$`)      // Used to remove trailing '.'
+
+func InitGlobals() { // TODO finish this and move to initglobals.go
 	if isDevBuild() {
 		GIT_REL = "$(git log --format='%h %ci' -1 2>/dev/null | awk '{ print $1\" \"$2\" \"$3 }')"
 		GIT_REL_SHORT = "$(git log --format='%h %ci' -1 2>/dev/null | awk '{ print $1 }')"
