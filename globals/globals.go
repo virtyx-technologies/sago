@@ -39,7 +39,7 @@ var (
 
 	OpenSSL string // The path to the openssl executable
 	DataDir string
-	OpenSslMeta *OpenSslMetadata
+	Meta    *OpenSslMetadata
 )
 
 
@@ -103,6 +103,7 @@ var TEMPDIR = ""
 var TMPFILE = ""
 var ERRFILE = ""
 var CLIENT_AUTH = false
+var BugsOpt  = ""
 var NO_SSL_SESSIONID = false
 var HOSTCERT = "" // File with host certificate, without intermediate certificate
 var HEADERFILE = ""
@@ -131,29 +132,6 @@ var OSSL_VER_APPENDIX = "none"
 var CLIENT_PROB_NO = 1
 var HAS_DH_BITS bool // initialize openssl variables
 var OSSL_SUPPORTED_CURVES = ""
-var HAS_SSL2 = false
-var HAS_SSL3 = false
-var HAS_TLS13 = false
-var HAS_PKUTIL = false
-var HAS_PKEY = false
-var HAS_NO_SSL2 = false
-var HAS_NOSERVERNAME = false
-var HAS_CIPHERSUITES = false
-var HAS_COMP = false
-var HAS_NO_COMP = false
-var HAS_ALPN = false
-var HAS_NPN = false
-var HAS_FALLBACK_SCSV = false
-var HAS_PROXY = false
-var HAS_XMPP = false
-var HAS_POSTGRES = false
-var HAS_MYSQL = false
-var HAS_LMTP = false
-var HAS_NNTP = false
-var HAS_IRC = false
-var HAS_CHACHA20 = false
-var HAS_AES128_GCM = false
-var HAS_AES256_GCM = false
 var PORT = 443 // unless otherwise auto-determined, see below
 var NODE = ""
 var NODEIP = ""

@@ -1,12 +1,15 @@
 package util
 
 import (
+	"bufio"
+	"net"
 	"os/exec"
 	"strconv"
+	"strings"
 )
 
 
-// TODO : Add .exe suffix on Windows
+// TODO : need Windows implementation
 func IsOnPath(name string) (bool, string) {
 	var (
 		command = "type"
@@ -26,3 +29,22 @@ func Atoi(in string, defaultValue int) int {
 	}
 }
 
+func IsIpv4Addr(s string) bool {
+	return net.ParseIP(s).To4()  != nil
+}
+
+func Head(s string) string {
+	scanner := bufio.NewScanner(strings.NewReader(s))
+	i := 10
+	var out string
+	for scanner.Scan() {
+		out += scanner.Text()
+		out += "\n"
+		i--
+		if i == 0 {
+			break
+		}
+	}
+
+	return out
+}

@@ -10,9 +10,13 @@ import (
 // Initialise global variables
 func initGlobals() {
 	OpenSSL = findOpensslBinary()
-	OpenSslMeta = NewOpenSslMetadata()
+	Meta = NewOpenSslMetadata()
 	DataDir = findDataDir()
 	Targets = getTargets()
+
+	if Options.GetBool(Bugs) {
+		BugsOpt  = "-bugs"
+	}
 }
 
 func getTargets() []string {

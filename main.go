@@ -129,7 +129,7 @@ func checkBsdMount() {
 }
 
 func check4opensslOldfarts() {
-	if OpenSslMeta.VerMajor < 1 {
+	if Meta.VerMajor < 1 {
 		log.Fatal("Versions of openssl older than 1.0 are not supported")
 	}
 }

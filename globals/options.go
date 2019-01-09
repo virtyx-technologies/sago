@@ -18,6 +18,9 @@ const (
    DoMassTesting = "DoMassTesting" // was --file
    DoMxAllIps    = "DoMxAllIps"
 	XmppHost      = "xmpphost"
+	Sneaky = "Sneaky"
+	AssumeHttp = "assume-http"
+	Bugs  = "bugs"
 
 	Version = "version"
 	Help = "help"
@@ -75,6 +78,9 @@ func addFlags(fs *pflag.FlagSet) { // TODO add real flags
 	fs.String("log", "info", "Level of logging ")   // TODO
 	fs.Bool(DoMassTesting, false, "TODO")
 	fs.Bool(DoMxAllIps, false, "TODO")
+	fs.Bool(Sneaky, false, "Use 'sneaky' User Agent")
+	fs.Bool(AssumeHttp, false, "in rare cases (WAF, old servers, grumpy SSL) service detection fails. 'True' enforces HTTP checks")
+	fs.Bool(Bugs, false, "Use '-bugs' option for openssl, needed for some BIG IP F5")
 }
 
 func PrintDefaults() {
