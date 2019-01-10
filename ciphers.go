@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"github.com/virtyx-technologies/sago/globals"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
 	"strings"

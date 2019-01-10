@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"github.com/virtyx-technologies/sago/globals"
 	"github.com/virtyx-technologies/sago/util"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"os/exec"
 	"strings"
 )

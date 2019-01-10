@@ -4,7 +4,7 @@ import (
 	. "github.com/virtyx-technologies/sago/globals"
 	"github.com/virtyx-technologies/sago/reversedns"
 	"github.com/virtyx-technologies/sago/util"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net"
 )
 

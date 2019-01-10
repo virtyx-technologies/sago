@@ -3,7 +3,7 @@ package main
 import (
 	. "github.com/virtyx-technologies/sago/globals"
 	"github.com/virtyx-technologies/sago/stopwatch"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"regexp"
 	"time"
 )
@@ -22,11 +22,9 @@ func init() {
 	// TODO	[[ -n "$MEASURE_TIME_FILE" ]] && >"$MEASURE_TIME_FILE"
 }
 
-func letsRoll(service, node string) int {
+func letsRoll(service, node string, port int) int {
 	var ret int
 	sectionNumber := 1
-
-	stopwatch.Click("initialized")
 
 	if "" == node {
 		log.Fatal("NODE doesn't resolve to an IP address", node, ERR_DNSLOOKUP)
@@ -37,7 +35,7 @@ func letsRoll(service, node string) int {
 	stopwatch.Click("determineRdns")
 
 	SERVER_COUNTER++
-	startTlsService := determineService(service, node) // STARTTLS service? Other will be determined here too. Returns always 0 or has already exited if fatal error occurred
+	startTlsService := determineService(service, node, port) // STARTTLS service? Other will be determined here too. Returns always 0 or has already exited if fatal error occurred
 
 	// "secret" devel globals --devel:
 	//	$doTlsSockets && [[ $TLS_LOW_BYTE -eq 22 ]] && { sslv2Sockets "" "true"; echo $? ; exit $ALLOK
@@ -210,10 +208,6 @@ func letsRoll(service, node string) int {
 
 func calcScantime() {
 
-}
-
-func determineService(service, node string) string {
-	// TODO
 }
 
 func resetHostDependedVars() {

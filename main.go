@@ -3,7 +3,7 @@ package main
 import (
 	. "github.com/virtyx-technologies/sago/globals"
 	"github.com/virtyx-technologies/sago/stopwatch"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -51,13 +51,13 @@ func main() {
 		if 1 == queryGlobals() { // if we have just 1x "do_*" --> we do a standard run -- otherwise just the one specified
 			setScanningDefaults()
 		}
-		runMxAllIps(URI, PORT) // we should reduce run_mx_all_ips to the stuff necessary as ~15 lines later we have similar code
+		runMxAllIps(URI, Port) // we should reduce run_mx_all_ips to the stuff necessary as ~15 lines later we have similar code
 		return
 	}
 
 	// Main loop
-	for _, ip := range IPADDRs {
-		letsRoll("${STARTTLS_PROTOCOL}", ip)
+	for _, ip := range Targets {
+		letsRoll("${STARTTLS_PROTOCOL}", ip, Port)
 	}
 	return
 }

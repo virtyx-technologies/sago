@@ -132,12 +132,11 @@ var OSSL_VER_APPENDIX = "none"
 var CLIENT_PROB_NO = 1
 var HAS_DH_BITS bool // initialize openssl variables
 var OSSL_SUPPORTED_CURVES = ""
-var PORT = 443 // unless otherwise auto-determined, see below
+var Port = 443 // unless otherwise auto-determined, see below
 var NODE = ""
 var NODEIP = ""
 var rDNS = ""
 var CORRECT_SPACES = "" // Used for IPv6 and proper output formatting
-var IPADDRs []string
 var IP46ADDRs = ""
 var LOCAL_A = false    // Does the $NODEIP come from /etc/hosts?
 var LOCAL_AAAA = false // Does the IPv6 IP come from /etc/hosts?
@@ -199,28 +198,6 @@ var RxCommas   = regexp.MustCompile(`\s*,\s*`) // Used to split string at comma 
 var RxFinalS   = regexp.MustCompile(`s$`)      // Used to remove trailing 's'
 var RxFinalDot = regexp.MustCompile(`\.$`)      // Used to remove trailing '.'
 
-func InitGlobals() { // TODO finish this and move to initglobals.go
-	if isDevBuild() {
-		GIT_REL = "$(git log --format='%h %ci' -1 2>/dev/null | awk '{ print $1\" \"$2\" \"$3 }')"
-		GIT_REL_SHORT = "$(git log --format='%h %ci' -1 2>/dev/null | awk '{ print $1 }')"
-		REL_DATE = "$(git log --format='%h %ci' -1 2>/dev/null | awk '{ print $2 }')"
-	} else {
-		REL_DATE = "$(tail -5 \"$0\" | awk '/dirkw Exp/ { print $5 }')"
-	}
-
-	// TODO HSTS_MIN = HSTS_MIN * 86400 // correct to seconds
-	//HPKP_MIN = HPKP_MIN * 86400 // correct to seconds
-	//
-	//if MEASURE_TIME_FILE != "" {
-	//	MEASURE_TIME = true
-	//}
-
-}
-
-// TODO
-func isDevBuild() bool {
-	return true
-}
 
 var UrlPath string
 

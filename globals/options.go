@@ -2,6 +2,8 @@ package globals
 
 import (
 	"fmt"
+	"github.com/DataDog/datadog-agent/pkg/util/log"
+	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
 	"strings"
@@ -29,6 +31,8 @@ const (
 	InstallDir = "install-dir"
 )
 
+var logLevel string
+
 func init() {
 
 	v := viper.New()
@@ -44,6 +48,7 @@ func init() {
 	v.BindPFlags(cmd)
 	// Ignore errors; CommandLine is set for ExitOnError.
 	cmd.Parse(os.Args[1:])
+	setLogLevel()
 
 	var err error
 	if configFile == "" {
@@ -56,7 +61,7 @@ func init() {
 		s, _ := filepath.Abs(configFile)
 		configDir = filepath.Dir(s)
 	}
-	fmt.Println("Using config file", configFile)
+	log.Info("Using config file", configFile)
 	v.SetConfigFile(configFile)
 	v.ReadInConfig()
 
@@ -66,16 +71,22 @@ func init() {
 	initGlobals()
 }
 
+func setLogLevel() {
+  lvl, err := logrus.ParseLevel(logLevel)
+  fmt.Println(err.Error())
+  logrus.SetLevel(lvl)
+}
+
 func addFlags(fs *pflag.FlagSet) { // TODO add real flags
 	// Actions
 	fs.Bool(Version, false, "Print version & exit ")
 	fs.Bool(Help, false, "Display help & exit")
 	fs.Bool(PrintCiphers, false, "Print local ciphers & exit")
 	// Configuration
+	fs.StringVar(&logLevel, "log", "info", "Level of logging ")
 	fs.String(Target, "", "Comma-separated list of IPs and/or Hosts")
 	fs.String(OpenSslFile, "", "full path to OpenSSL executable")
 	fs.String(XmppHost, "", "Supplies the XML stream 'to-domain' for STARTTLS enabled XMPP")
-	fs.String("log", "info", "Level of logging ")   // TODO
 	fs.Bool(DoMassTesting, false, "TODO")
 	fs.Bool(DoMxAllIps, false, "TODO")
 	fs.Bool(Sneaky, false, "Use 'sneaky' User Agent")
