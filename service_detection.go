@@ -19,7 +19,7 @@ var (
 
 // determines whether the port has an HTTP service running or not (plain TLS, no STARTTLS)
 // arg1 could be the protocol determined as "working". IIS6 needs that
-func service_detection(protocol string, node string, port int) string {
+func serviceDetection(protocol string, node string, port int) string {
 
 	var service string
 
@@ -53,12 +53,12 @@ func service_detection(protocol string, node string, port int) string {
 
 		switch service {
 		case "HTTP":
-			// out " $SERVICE"
-			// fileout "${jsonID}" "INFO" "$SERVICE"
+			out(" "+service)
+			// fileout "${jsonID}" "INFO" ""+service+""
 
 		case "IMAP", "POP", "SMTP", "NNTP", "MongoDB":
-			// out " $SERVICE, thus skipping HTTP specific checks"
-			// fileout "${jsonID}" "INFO" "$SERVICE, thus skipping HTTP specific checks"
+			// out " "+service+", thus skipping HTTP specific checks"
+			// fileout "${jsonID}" "INFO" ""+service+", thus skipping HTTP specific checks"
 
 		default:
 			if CLIENT_AUTH {

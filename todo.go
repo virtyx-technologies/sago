@@ -9,7 +9,7 @@ package main
 // Circumstances observed so far: 1.) IIS 6  2.) starttls + dovecot imap
 // The first try in the loop is empty as we prefer not to specify always a protocol if we can get along w/o it
 //
-func determine_optimal_proto(proto string) string {
+func determineOptimalProtocol(proto string) string {
 /*
 local all_failed=true
 local tmp=""
