@@ -14,7 +14,7 @@ func setup() {
 	os.Clearenv()
 	logging.HideLogs()
 	for _, path := range getConfigFilesLocations() {
-		folder := filepath.Join(path, virtyxAgentDirectory)
+		folder := filepath.Join(path, configDirectory)
 		os.RemoveAll(folder)
 	}
 }
