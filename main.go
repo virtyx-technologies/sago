@@ -19,7 +19,6 @@ func main() {
 	// see #705, we need to source TLS_DATA_FILE here instead of in get_install_dir(), see #705
 	loadTlsVars() // See ./etc/tls_data.txt
 	setColorFunctions()
-	maketempf() // TODO : location for error file & CA cert
 	stopwatch.Click("parse")
 	LoadCiphers()
 	stopwatch.Click("LoadCiphers")
@@ -36,7 +35,6 @@ func main() {
 
 	// Mass testing means reading multiple command lines from the file specified by --file
 	if Options.GetBool(DoMassTesting) {
-		prepareLogging()
 		if Options.GetString("MASS-TESTING-MODE") == "parallel" {
 			runMassTestingParallel()
 		} else {
@@ -51,40 +49,15 @@ func main() {
 		if 1 == queryGlobals() { // if we have just 1x "do_*" --> we do a standard run -- otherwise just the one specified
 			setScanningDefaults()
 		}
-		runMxAllIps(URI, Port) // we should reduce run_mx_all_ips to the stuff necessary as ~15 lines later we have similar code
+		runMxAllIps(URI, DefaultPort) // we should reduce run_mx_all_ips to the stuff necessary as ~15 lines later we have similar code
 		return
 	}
 
 	// Main loop
-	for _, ip := range Targets {
-		letsRoll("${STARTTLS_PROTOCOL}", ip, Port)
+	for _, target := range Targets {
+		letsRoll(target)
 	}
 	return
-}
-
-func drawLine(s string, i int) {
-	// TODO
-}
-
-func outLine(strings ...interface{}) {
-	// TODO
-}
-
-func prBold(s string) {
-	// TODO
-}
-
-func fatal(s string, i int) {
-	// TODO
-}
-
-func determineIpAddresses() bool {
-	// TODO
-	return false
-}
-
-func parseHnPort(s string) {
-	// TODO
 }
 
 func runMxAllIps(s string, i int) {
@@ -109,10 +82,6 @@ func runMassTesting() {
 }
 
 func runMassTestingParallel() {
-	// TODO
-}
-
-func prepareLogging() {
 	// TODO
 }
 
@@ -142,22 +111,6 @@ func mybanner() {
 	// TODO Banner for ToS, etc
 }
 
-func prepareArrays() {
-	// TODO
-}
-
-func prepareDebug() {
-	// TODO
-}
-
-func choosePrintf() {
-	// TODO
-}
-
-func maketempf() {
-	// TODO
-}
-
 func setColorFunctions() {
 	// TODO
 }
@@ -166,14 +119,3 @@ func loadTlsVars() {
 	// TODO
 }
 
-func csvHeader() {
-	// TODO
-}
-
-func jsonHeader() {
-	// TODO
-}
-
-func htmlHeader() {
-	// TODO
-}

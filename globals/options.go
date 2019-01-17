@@ -1,7 +1,6 @@
 package globals
 
 import (
-	"fmt"
 	"github.com/DataDog/datadog-agent/pkg/util/log"
 	"github.com/sirupsen/logrus"
 	"os"
@@ -29,6 +28,7 @@ const (
 	Target = "target"
 	OpenSslFile = "openssl-file"
 	InstallDir = "install-dir"
+	StartTls = "starttls"
 )
 
 var logLevel string
@@ -73,7 +73,9 @@ func init() {
 
 func setLogLevel() {
   lvl, err := logrus.ParseLevel(logLevel)
-  fmt.Println(err.Error())
+  if err != nil {
+	  logrus.Fatal(err.Error())
+  }
   logrus.SetLevel(lvl)
 }
 
@@ -86,6 +88,7 @@ func addFlags(fs *pflag.FlagSet) { // TODO add real flags
 	fs.StringVar(&logLevel, "log", "info", "Level of logging ")
 	fs.String(Target, "", "Comma-separated list of IPs and/or Hosts")
 	fs.String(OpenSslFile, "", "full path to OpenSSL executable")
+	fs.String(StartTls, "", "Does a default run against a STARTTLS enabled <protocol>, protocol is <ftp|smtp|lmtp|pop3|imap|xmpp|telnet|ldap|postgres|mysql>")
 	fs.String(XmppHost, "", "Supplies the XML stream 'to-domain' for STARTTLS enabled XMPP")
 	fs.Bool(DoMassTesting, false, "TODO")
 	fs.Bool(DoMxAllIps, false, "TODO")

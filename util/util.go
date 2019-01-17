@@ -2,7 +2,6 @@ package util
 
 import (
 	"bufio"
-	"net"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -11,13 +10,7 @@ import (
 
 // TODO : need Windows implementation
 func IsOnPath(name string) (bool, string) {
-	var (
-		command = "type"
-		arg1 = "-p"
-	)
-
-	cmd := exec.Command(command, arg1, name)
-	path, err := cmd.Output()
+	path, err := exec.LookPath(name)
 	return err == nil, string(path)
 }
 
@@ -27,10 +20,6 @@ func Atoi(in string, defaultValue int) int {
 	} else {
 		return out
 	}
-}
-
-func IsIpv4Addr(s string) bool {
-	return net.ParseIP(s).To4()  != nil
 }
 
 func Head(s string) string {

@@ -3,29 +3,39 @@ package main
 import (
 	. "github.com/virtyx-technologies/sago/globals"
 	"io/ioutil"
+	"log"
 	"os/exec"
+	"syscall"
 )
 
-func runOssl(command string, options []string, stdin string) (stdout, stderr string){
+func runOssl(command string, options []string, stdin string) (stdout, stderr string, exitStatus int){
 
 	var args []string
 	args = append(args, command)
 	args = append(args, options...)
 
 	cmd := exec.Command(OpenSSL, args...)
-	in, _ := cmd.StdinPipe()
-	out, _ := cmd.StdoutPipe()
-	err, _ := cmd.StderrPipe()
-	in.Write([]byte(stdin))
-	in.Close()
-	outBytes, _ := ioutil.ReadAll(out)
-	errBytes, _ := ioutil.ReadAll(err)
-	cmd.Wait()
+	inPipe, _  := cmd.StdinPipe()
+	outPipe, _ := cmd.StdoutPipe()
+	errPipe, _ := cmd.StderrPipe()
+	inPipe.Write([]byte(stdin))
+	inPipe.Close()
 
-	return string(outBytes), string(errBytes)
+	if err := cmd.Start(); err != nil {
+		log.Fatal("Failed to run command ", cmd, err)
+	}
+	outBytes, _ := ioutil.ReadAll(outPipe)
+	errBytes, _ := ioutil.ReadAll(errPipe)
+
+	err := cmd.Wait()
+	if err != nil {
+		// Did the command fail because of an unsuccessful exit code
+		if exitError, ok := err.(*exec.ExitError); ok {
+			exitStatus = exitError.Sys().(syscall.WaitStatus).ExitStatus()
+		} else {
+			log.Fatal("Command failed ", cmd, err)
+		}
+	}
+	return string(outBytes), string(errBytes), exitStatus
 }
 
-func x () {
-	runOssl("s_client", s_client_options( "$1 -quiet $BUGS -connect $NODEIP:$PORT $PROXY $SNI"), "$GET_REQ11")
-}
-// printf  | $OPENSSL   >$TMPFILE 2>$ERRFILE &

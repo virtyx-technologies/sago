@@ -23,10 +23,13 @@ func initGlobals() {
 
 func getTargets() []string {
 	s := Options.GetString(Target)
+	var targets []string
 	if s == "" {
-		log.Fatal("No target hosts specified")
+		log.Warn("No target hosts specified")
+	} else {
+		targets = RxCommas.Split(s, -1)
 	}
-	return RxCommas.Split(s, -1)
+	return targets
 }
 
 func findOpensslBinary() string {

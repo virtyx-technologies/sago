@@ -102,7 +102,6 @@ var SESS_RESUMPTION []string
 var TEMPDIR = ""
 var TMPFILE = ""
 var ERRFILE = ""
-var CLIENT_AUTH = false
 var BugsOpt  = ""
 var NO_SSL_SESSIONID = false
 var HOSTCERT = "" // File with host certificate, without intermediate certificate
@@ -132,7 +131,7 @@ var OSSL_VER_APPENDIX = "none"
 var CLIENT_PROB_NO = 1
 var HAS_DH_BITS bool // initialize openssl variables
 var OSSL_SUPPORTED_CURVES = ""
-var Port = 443 // unless otherwise auto-determined, see below
+var DefaultPort = 443 // unless otherwise auto-determined, see below
 var NODE = ""
 var NODEIP = ""
 var rDNS = ""

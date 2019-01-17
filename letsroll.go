@@ -1,20 +1,17 @@
 package main
 
 import (
+	log "github.com/sirupsen/logrus"
 	. "github.com/virtyx-technologies/sago/globals"
 	"github.com/virtyx-technologies/sago/stopwatch"
-	log "github.com/sirupsen/logrus"
+	"github.com/virtyx-technologies/sago/util"
+	"net"
 	"regexp"
+	"strings"
 	"time"
 )
 
 var startTime, lastTime time.Time
-
-var (
-	rxNotColon = regexp.MustCompile(`[^:]`)
-	rxColon    = regexp.MustCompile(`[:]`)
-	rxValid    = regexp.MustCompile(`[a-zA-Z0-9:]`)
-)
 
 func init() {
 	startTime = time.Now()
@@ -22,30 +19,32 @@ func init() {
 	// TODO	[[ -n "$MEASURE_TIME_FILE" ]] && >"$MEASURE_TIME_FILE"
 }
 
-func letsRoll(service, node string, port int) int {
-	var ret int
+func letsRoll(target string) (ret int) {
 	sectionNumber := 1
 
-	if "" == node {
-		log.Fatal("NODE doesn't resolve to an IP address", node, ERR_DNSLOOKUP)
+	service := Options.GetString(StartTls)
+	node, err  := parseTarget(target)
+	if err != nil {
+		return
 	}
 
-	node = nodeIpToProperIp6(node)
 	resetHostDependedVars()
 	stopwatch.Click("determineRdns")
-
 	SERVER_COUNTER++
-	startTlsService := determineService(service, node, port) // STARTTLS service? Other will be determined here too. Returns always 0 or has already exited if fatal error occurred
+
+	err = determineService(service, node)
+	if err != nil {
+		return
+	}
 
 	// "secret" devel globals --devel:
 	//	$doTlsSockets && [[ $TLS_LOW_BYTE -eq 22 ]] && { sslv2Sockets "" "true"; echo $? ; exit $ALLOK
 	//$doTlsSockets && [[ $TLS_LOW_BYTE -ne 22 ]] && { tlsSockets "$TLS_LOW_BYTE" "$HEX_CIPHER" "all"; echo $? ; exit $ALLOK
 	//$doCipherMatch && { fileoutSectionHeader $sectionNumber false; runCipherMatch ${singleCipher}
 
-	// all top level functions  now following have the prefix "run_"
 	fileoutSectionHeader(&sectionNumber, false)
 	if Options.GetBool("DoProtocols") {
-		ret += runProtocols()
+		ret += runProtocols(node)
 		stopwatch.Click("runProtocols()")
 		ret += runNpn()
 		stopwatch.Click("runNpn")
@@ -219,42 +218,7 @@ func resetHostDependedVars() {
 
 }
 
-func nodeIpToProperIp6(nodeIp string) string {
-	if isIpv6Addr(nodeIp) {
-		if !Options.GetBool("UNBRACKTD_IPV6") {
-			nodeIp = "[" + nodeIp + "]"
-		}
-		// TODO don't think we need this
-		// IPv6 addresses are longer, this variable takes care that "further IP" and "Service" is properly aligned
-		// len_nodeip = ${//NODEIP}
-		// CORRECT_SPACES = "$(printf -- " "'%.s' $(eval "echo {1.."$((len_nodeip - 17))"}"))"
-	}
-	return nodeIp
-}
 
-func isIpv6Addr(s string) bool {
-
-	if len(s) == 0 {
-		return false
-	}
-
-	// less than 2x ":"
-	if len(rxNotColon.ReplaceAllString(s, "")) < 2 {
-		return false
-	}
-
-	// check on chars allowed:
-	if len(rxValid.ReplaceAllString(s, "")) > 0 {
-		return false
-	}
-
-	return true
-}
-
-func fileoutSectionHeader(sectionNumber *int, flag bool) {
-	*sectionNumber++
-	// TODO
-}
 
 func runAlpn() int {
 	return 0 // TODO
@@ -264,7 +228,7 @@ func runNpn() int {
 	return 0 // TODO
 }
 
-func runProtocols() int {
+func runProtocols(node *Node) int {
 	return 0 // TODO
 }
 
@@ -366,4 +330,51 @@ func runTicketbleed() int {
 }
 func runTlsFallbackScsv() int {
 	return 0 // TODO
+}
+
+func parseTarget(target string) (node *Node, err error) {
+	var (
+		x, p, scheme, host string
+		port int
+		ip net.IP
+	)
+
+	rxScheme := regexp.MustCompile(`^(\w+)://`)
+	if match := rxScheme.FindStringSubmatch(target); match != nil {
+		scheme = match[1]
+		strings.Replace(target, match[0], "", 1)
+	}
+	x, p, err = net.SplitHostPort(target)
+	if err != nil {
+		if strings.Contains(err.Error(), "missing port") {
+			port = DefaultPort
+			x = target
+		} else {
+			log.Error("Failed to parse target ", target)
+			return
+		}
+	}
+
+	port = util.Atoi(p, DefaultPort)
+
+	ip = net.ParseIP(x)
+	if ip == nil {
+		host = x
+		var addrs []net.IP
+		addrs, err = net.LookupIP(host)
+		if err != nil {
+			return
+		}
+		ip = addrs[0]
+	} else {
+		var names []string
+		names, err = net.LookupAddr(ip.String())
+		if err != nil {
+			return
+		}
+		host = names[0]
+	}
+
+
+	return &Node{Scheme: scheme, Host: host, Ip: ip, Port: port}, nil
 }

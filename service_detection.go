@@ -19,15 +19,15 @@ var (
 
 // determines whether the port has an HTTP service running or not (plain TLS, no STARTTLS)
 // arg1 could be the protocol determined as "working". IIS6 needs that
-func serviceDetection(protocol string, node string, port int) string {
+func serviceDetection(protocol string, node *Node) string {
 
 	var service string
 
-	nodePort := node + ":" + string(port)
+	nodePort := node.hostPort()
 
-	if ! CLIENT_AUTH {
+	if ! node.features["CLIENT_AUTH"] {
 		// SNI is not standardized for !HTTPS but fortunately for other protocols s_client doesn't seem to care
-		stdOut, _ := runOssl("s_client", s_client_options(protocol, "-quiet", BugsOpt, "-connect", nodePort, PROXY, SNI), GET_REQ11)
+		stdOut, _, _ := runOssl("s_client", s_client_options(protocol, "-quiet", BugsOpt, "-connect", nodePort, PROXY, SNI), GET_REQ11)
 		head := Head(stdOut)
 
 		switch {
@@ -61,7 +61,7 @@ func serviceDetection(protocol string, node string, port int) string {
 			// fileout "${jsonID}" "INFO" ""+service+", thus skipping HTTP specific checks"
 
 		default:
-			if CLIENT_AUTH {
+			if node.features["CLIENT_AUTH"] {
 				//out " certificate-based authentication => skipping all HTTP checks"
 				//echo "certificate-based authentication => skipping all HTTP checks" >$TMPFILE
 				//fileout "${jsonID}" "INFO" "certificate-based authentication => skipping all HTTP checks"
